@@ -11,18 +11,23 @@ function formatEvent (event)
     return returnText;
 }
 
-var search = function (...params)
+var search = function (searchTerms = "Joe Bonamassa")
 {   // Search Bands In Town for concert information for the indicated band / artist
 
     bandsintown
-    .getArtistEventList('Joe Bonamassa')
+    .getArtistEventList(searchTerms)
     .then(function(events)
     {   // events is an array of objects...build an output string with the information we want
 
-        // var allEvents = [];
-        events.forEach (function (event)
-        {   log.output (formatEvent(event));
-        });
+        if (events.upcoming_event_count === 0)
+        {   log.output ("There are no upcoming concert dates for this artist");
+        }
+        else
+        {
+            events.forEach (function (event)
+            {   log.output (formatEvent(event));
+            });
+        }
     })
     .catch (function (error)
     {   console.log ("error: ", error);
