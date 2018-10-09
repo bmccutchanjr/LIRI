@@ -1,4 +1,4 @@
-console.log("keys.js");
+// console.log("keys.js");
 
 exports.spotify =
 {   id: process.env.SPOTIFY_ID,

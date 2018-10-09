@@ -5,7 +5,7 @@ const moment = require("moment");                          // DateFNS
 function formatEvent (event)
 {   // Create a text string with the data we want for this event
 
-    var returnText = event.datetime + " in " +
+    var returnText = moment (event.datetime).format("MM/DD/YYYY") + " in " +
                      event.venue.city + ", " + event.venue.country + "  at " + 
                      event.venue.name;
     return returnText;
