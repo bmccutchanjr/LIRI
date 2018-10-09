@@ -19,10 +19,9 @@ const spotify = require ("./spotify.js");                   // Spotify module
 // and then get these additional modules needed for this app
 const fs = require("fs");                                   // Node's file system module
 const log = require("./log.js");                            // log file module
-const inquirer = require("inquirer");                       // interactive prompt
 ```
 Four of these are custom modules written for LIRI and are `bandsintown.js`, `omdb.js`, `spotify.js` and `log.js`.  These modules in turn import modules from their respective API developers.
 
-LIRI also makes use of the standard Node modules `fs`.
+LIRI also makes use of the standard Node module `fs`.
 
 If you want to download and run LIRI on your own system, you'll need to run `npm i` to install the required dependencies.
