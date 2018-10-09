@@ -49,12 +49,7 @@ function search (what = "The Sign")
  
         data.tracks.items.forEach (function (myData)
         {
-// console.log (myData);
-console.log (myData.artists[0].name);
-console.log (myData.name);
-console.log (myData.external_urls.spotify);
-console.log (myData.album.name);
-printTrack (myData);
+            printTrack (myData);
         });
     });
 }

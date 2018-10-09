@@ -5,7 +5,7 @@ LIRI is a command line application written in JavaScript and using NodeJS.  It i
 The data retreived is output to the console screen and simultaneously to a log file (called LIRI.log).
 
 This is a command line application.  There is no web page to view, but I do have a [video on Google Drive](
-https://drive.google.com/file/d/1wN4MEgCLi1f_xqJMWUBEDKKm3Bo6zESZ/view?usp=sharing) for demonstration.
+https://drive.google.com/file/d/1wN4MEgCLi1f_xqJMWUBEDKKm3Bo6zESZ/view) for demonstration.
 
 ## About LIRI
 
