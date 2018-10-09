@@ -3,9 +3,9 @@
 const bandsInTown = require("./bandsintown.js");            // Bands in Town module
 const omdb = require("./omdb.js");                          // OMDB module
 const spotify = require ("./spotify.js");                   // Spotify module
-// spotify.search ();
 
 // and then get these additional modules needed for this app
+const fs = require("fs");                                   // Node's file system module
 const log = require("./log.js");                            // log file module
 const inquirer = require("inquirer");                       // interactive prompt
 
@@ -14,116 +14,114 @@ var commands = ["concert-this",
                 "movie-this",
                 "spotify-this-song"
                ];
+
 function concatSearch (search)
-{
+{   // Concatenate all of the command line parameters to form the search terms
+
     var searchFor = "";
     for (var i=0; i<search.length; i++)
     {   searchFor += search[i];
         if (i<(search.length - 1)) searchFor += " ";
     }
+
     return searchFor;
 }
 
 function executeSearch (command, search)
 {   // execute the appropriate search command
-               
+
+    log.output ("\n==============================\nLIRI\n==============================");
+        
     if (command === "concert-this")
-    {   log.output ("\n==============================\nSearching Bands In Town for ");
-        bandsInTown.search (search)
+    {   bandsInTown.search (search)
+    }
+    else
+    if (command === "do-what-it-says")
+    {   randomSearch ();
     }
     else
     if (command === "movie-this")
-    {   log.output ("\n==============================\nSearching OMDB for ");
-        omdb.search (search);
+    {   omdb.search (search);
     }
     else
     if (command === "spotify-this-song")
-    {   log.output ("\n==============================\nSearching Spotify for ");
-        spotify.search ();
+    {   spotify.search (search);
     }
 }
-               
-function searchForWhat (command)
-{   // prompt the user for a search string
 
-    // The parameter passed to this function id the command to execute.  Because this prompt is an
-    // asynchronous operation, the search cannot be executed from the calling function.  The search
-    // has to be called from this function when the prompt is completed.
-               
-    inquirer               
-    .prompt (
-    {   type:    "input",
-        name:    "search",
-        message: "What do you want me to search for?",
-    })
-    .then (function (answer)
-    {   log.output ("LIRI says, 'Okay, I will search for " + answer.search);
-        executeSearch (command, answer.search);
-    })
-    .catch (function (error)
-    {   log.output ("==============================");
-        log.output ("LIRI says: 'An error occured -- terminating");
-        log.output ("==============================");
-    });
-}
-               
-function doWhat ()
-{   // prompt the user for action to perform
+function randomSearch ()
+{   // Read the contents of random.txt and parse it into an array of objects.  These objects contain the
+    // LIRIcommand and search terms for random searches.
 
-    inquirer
-    .prompt (
-    {   type:    "list",
-        name:    "command",
-        message: "What do you want me to do?",
-        choices: commands
-    })
-    .then (function (answer)
-    {   log.output ("LIRI says, 'Okay, I will " + answer.command);
+    fs.readFile ("random.txt", "utf8", function (error, data)
+    {   
+        if (error) console.log ("error: ", error);
+        else
+        {   // Make an array of strings from the data returned, split the data on "\r\n"
 
-        if (process.args.length === 2)
-        {   // No parameters were passed from the command line, so prompt for search terms.
-            searchForWhat (answer.command);
+            var commands = data.split ("\r\n");
+
+            var cLength = commands.length;
+
+            // parse the individual elements of the array and create an object with two properties:
+            // 'command' and 'what'
+
+            for (var i=0; i<cLength; i++)
+            {   var parts = commands[i].split (",");
+                if (parts[1])
+                {
+                    var pLength = parts[1].length;
+                    parts[1] = parts[1].substring (1, pLength - 1);
+                    var obj = 
+                    {   "command":  parts[0],
+                        "what": parts[1]
+                    }
+        
+                    // put the object bak into the array
+                    commands[i] = obj;
+                }
+            }
+
+            // randomly select one of the elements of the array, and return it...
+            var randomIndex = Math.floor(Math.random() * commands.length);
+            executeSearch (commands[randomIndex].command, commands[randomIndex].what);
         }
     })
-    .catch (function (error)
-    {   log.output ("==============================");
-        log.output ("LIRI says: 'An error occured -- terminating");
-        log.output ("==============================");
-    });
 }
 
 var argLength = process.argv.length;
 var commandToPerform = "";
 
 if (argLength === 2)
-{   // LIRI was called without command line parameters.  Prompt the user for the action to take...
-    doWhat ();
+{   // LIRI was called without command line parameters.  Perform some random search...
+//     var doWhat = random.random ();
+// console.log (doWhat);
+// 
+//     executeSearch (doWhat.command, doWhat.what);
+    randomSearch ();
 }
 else
 {   // Okay, LIRI was called with command line parameters.  But that doesn't mean those parameters include a
     // valid LIRI command
 
-    if (commands.indexOf (process.argv [2].toLowerCase()) > -1)
+    var argv2 = process.argv [2].toLowerCase();
+    if (commands.indexOf (argv2) > -1)
     {   // A valid command was passed to LIRI on the command line...so we'll do that
 
-        commandToPerform = process.argv[2].toLowerCase();
-        log.output ("LIRI says 'Okay, I will " + commandToPerform);
+        log.output ("LIRI says 'Okay, I will " + argv2);
 
-        if (process.argv.length > 2)
+        var searchTerms = "";
+
+        if (process.argv.length > 3)
         {   // More than one parameter was passed from the command line.  All parameters after index 2
             // can be assumed to be the search terms
 
-            executeSearch (commandToPerform, concatSearch(process.argv.slice(3)));
+            executeSearch (argv2, concatSearch(process.argv.slice(3)));
+        }
+        else
+        {   // No search terms were provided...perform the default search
+
+            executeSearch (argv2);
         }
     }
-    else
-    {   // LIRI was called with command line parameters,  but thise parameters do not represent a known
-        // LIRI command.  Prompt the user for correct action to take...
-
-        doWhat ();
-
-        // and assume the parameters were intended as the search terms instead...so execute the search
-        executeSearch (commandToPerform, concatSearch(process.argv.slice(2)));
-
-    }
-};
+}

@@ -11,11 +11,13 @@ function formatEvent (event)
     return returnText;
 }
 
-var search = function (searchTerms = "Joe Bonamassa")
+var search = function (what = "Joe Bonamassa")
 {   // Search Bands In Town for concert information for the indicated band / artist
 
+    log.output ("Searching Bands In Town for " + what);
+        
     bandsintown
-    .getArtistEventList(searchTerms)
+    .getArtistEventList(what)
     .then(function(events)
     {   // events is an array of objects...build an output string with the information we want
 

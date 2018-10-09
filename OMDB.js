@@ -34,10 +34,12 @@ function formatMovie (movie)
     log.output (movie.Language);
 }
 
-var search = function (...params)
+var search = function (what = "Mr. Nobody")
 {   // Search OMDB for data on the indicated movie.  Searches are by title.
 
-    var url = "https://www.omdbapi.com/?t=Harold and&incTomatoes&apikey=78d19ea8";
+    log.output ("Searching OMDB for " + what);
+
+    var url = "https://www.omdbapi.com/?t=" + what + "&incTomatoes&apikey=78d19ea8";
     request(url, function(error, response, body)
     {   if(!error && response.statusCode == 200)
         {   // No errors and we have data...
