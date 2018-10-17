@@ -30,22 +30,27 @@ function concatSearch (search)
 function executeSearch (command, search)
 {   // execute the appropriate search command
 
-    log.output ("\n==============================\nLIRI\n==============================");
-        
-    if (command === "concert-this")
-    {   bandsInTown.search (search)
-    }
-    else
     if (command === "do-what-it-says")
     {   randomSearch ();
     }
     else
-    if (command === "movie-this")
-    {   omdb.search (search);
-    }
-    else
-    if (command === "spotify-this-song")
-    {   spotify.search (search);
+    {   log.output ("\n==============================\nLIRI\n==============================");
+        
+        if (command === "concert-this")
+        {   bandsInTown.search (search)
+        }
+        // else
+        // if (command === "do-what-it-says")
+        // {   randomSearch ();
+        // }
+        else
+        if (command === "movie-this")
+        {   omdb.search (search);
+        }
+        else
+        if (command === "spotify-this-song")
+        {   spotify.search (search);
+        }
     }
 }
 
@@ -59,7 +64,7 @@ function randomSearch ()
         else
         {   // Make an array of strings from the data returned, split the data on "\r\n"
 
-            var commands = data.split ("\r\n");
+            var commands = data.split ("*");
 
             var cLength = commands.length;
 
@@ -94,10 +99,6 @@ var commandToPerform = "";
 
 if (argLength === 2)
 {   // LIRI was called without command line parameters.  Perform some random search...
-//     var doWhat = random.random ();
-// console.log (doWhat);
-// 
-//     executeSearch (doWhat.command, doWhat.what);
     randomSearch ();
 }
 else
